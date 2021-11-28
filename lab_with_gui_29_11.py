@@ -105,18 +105,24 @@ class Interpretator(MDScreen):
                             self.text_input.text = self.str_edit
                             if len(self.bl.children) > 0:
                                 self.bl.add_widget(MDLabel(text=("%s%s") % (str(self.tab1), str("|"))))
-                            self.bl.add_widget(MDRaisedButton(text=self.text_input.text,
-                                                              pos_hint={"left": 1}, size=[18, 20],
-                                                              on_release=self.change_conf))
+                            s = MDRectangleFlatButton(text=self.text_input.text,
+                                                      pos_hint={"left": 1}, size=[18, 20],
+                                                      on_release=self.change_conf)
+                            s.text_color = (0, 0, 0, 1)
+                            s.line_color = (0, 0, 0, 1)
+                            self.bl.add_widget(s)
                         else:
                             tab = ""
                             if len(self.bl.children) > 0:
                                 for i in range(len(self.text_input.text) + 5):
                                     tab += " "
                                 self.bl.add_widget(MDLabel(text=("%s%s") % (str(self.tab1), str("|"))))
-                            self.bl.add_widget(MDRaisedButton(text=self.text_input.text,
-                                                              pos_hint={"left": 1},
-                                                              on_release=self.change_conf))
+                            s = MDRectangleFlatButton(text=self.text_input.text,
+                                                      pos_hint={"left": 1}, size=[18, 20],
+                                                      on_release=self.change_conf)
+                            s.text_color = (0, 0, 0, 1)
+                            s.line_color = (0, 0, 0, 1)
+                            self.bl.add_widget(s)
                         self.text_input.text = ''
                         if len(self.bl.children) > 26:
                             self.sv.scroll_y = 0
@@ -521,6 +527,20 @@ class Interpretator(MDScreen):
                                         var_condition.append(self.bl.children[len(self.bl.children) - i].text[0:j + 1])
                                     val_condition.append(self.bl.children[len(self.bl.children) - i].text[j + 2:len(
                                         self.bl.children[len(self.bl.children) - i].text)])
+                                    if self.bl.children[len(self.bl.children) - i].text[j + 2:len(
+                                        self.bl.children[len(self.bl.children) - i].text)] in var_condition:
+                                        for v in range(len(var_condition)):
+                                            if self.bl.children[len(self.bl.children) - i].text[j + 2:len(
+                                        self.bl.children[len(self.bl.children) - i].text)] == var_condition[v]:
+                                                val_condition[val_condition.index(
+                                                    self.bl.children[len(self.bl.children) - i].text[j + 2:len(
+                                                        self.bl.children[len(self.bl.children) - i].text)])] = \
+                                                val_condition[v]
+                                                break
+
+                                    else:
+                                        val_condition.append(self.bl.children[len(self.bl.children) - i].text[j + 2:len(
+                                            self.bl.children[len(self.bl.children) - i].text)])
                                     break
                                 else:
                                     if "input()" not in self.bl.children[len(self.bl.children) - i].text[j + 3:len(
@@ -529,7 +549,11 @@ class Interpretator(MDScreen):
                                             var_condition.append(self.bl.children[len(self.bl.children) - i].text[0:j])
                                         else:
                                             var_condition.append(self.bl.children[len(self.bl.children) - i].text[0:j + 1])
-                                        val_condition.append(self.bl.children[len(self.bl.children) - i].text[j + 3:len(
+                                        if self.bl.children[len(self.bl.children) - i].text[j + 3:len(
+                                            self.bl.children[len(self.bl.children) - i].text)] in var_condition:
+                                            pass
+                                        else:
+                                            val_condition.append(self.bl.children[len(self.bl.children) - i].text[j + 3:len(
                                             self.bl.children[len(self.bl.children) - i].text)])
                                     else:
                                         for j in range(len(self.bl.children[len(self.bl.children) - 1].text)):
@@ -661,7 +685,6 @@ class Interpretator(MDScreen):
                     if "input()" in self.bl.children[len(self.bl.children) - i].text:
                         self.input_cond(i)
                         break
-                                    # break
                 elif "input()" in self.bl.children[len(self.bl.children) - i].text:
                     for j in range(len(self.bl.children[len(self.bl.children) - 1].text)):
                         if self.bl.children[len(self.bl.children) - i].text[j + 1] == " ":
@@ -1002,7 +1025,6 @@ class Interpretator(MDScreen):
                                                 condition_min.append(False)
                                                 stop += 1
                                                 self.add_to_condition = False
-
                     elif self.bl.children[len(self.bl.children) - i].text[k] == "<":  # var<
                         if self.bl.children[len(self.bl.children) - i].text[k + 2] == " ":  # var< var2
                             if val[var.index(self.bl.children[len(self.bl.children) - i].text[check:k])] < val[
